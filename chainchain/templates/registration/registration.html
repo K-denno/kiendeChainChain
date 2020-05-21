@@ -1,0 +1,40 @@
+{% extends 'base/authBase.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block content %}
+
+
+<link href="https://fonts.googleapis.com/css?family=Indie+Flower|Overpass+Mono" rel="stylesheet">
+
+<div class="row">
+    <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+      <div class="card card-signin my-5">
+        <div class="card-body">
+          <h5 class="card-title text-center">Sign up</h5>
+          <form action="{% url 'signup' %}" method="POST">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign up</button>
+          </form>
+          <br>
+         <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+              <div class="sub-content">
+                  <div class="s-part">
+                    Already have an account?<a href="/auth/login"> Log in</a>
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+         </div>
+           
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+{% endblock %}
