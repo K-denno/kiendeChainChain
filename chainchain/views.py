@@ -2,7 +2,9 @@ from django.shortcuts import render,redirect
 from .forms import SignUpForm,ProfileForm
 from django.contrib.auth import login,authenticate
 from django.contrib.auth.decorators import login_required
-from .models import Profile,Notifications
+from .models import Profile,Notifications,Followers
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 
 
 # Create your views here.
@@ -10,15 +12,21 @@ from .models import Profile,Notifications
 def index(request):
     return render(request,'index.html')
 
+@login_required(login_url='/auth/login')
 def profile(request):
     notifications = Notifications.objects.filter(user=request.user)
-    if request.method == 'POST':
+    link = "http://{}/malisafi/{}".format(get_current_site(request),request.user.username)
+    if request.method == 'POST':        
         profForm = ProfileForm(request.POST,request.FILES,instance=request.user.profile)
         if profForm.is_valid():
             profForm.save()
+            user=request.user
+            user.username = profForm.cleaned_data.get('username')
+            user.email = profForm.cleaned_data.get('email')
+            user.save()
             return redirect('/')  
-    profForm= ProfileForm()
-    return render(request,'profile.html',{"notifications":notifications,"profForm":profForm})
+    profForm= ProfileForm()    
+    return render(request,'profile.html',{"notifications":notifications,"profForm":profForm,"link":link})
 
 def signup(request):
     form = SignUpForm()
@@ -32,7 +40,7 @@ def signup(request):
             user = authenticate(username=username,email=email, password=raw_password)
             profile = Profile(user=user,phone_number=form.cleaned_data.get('phone_number'))
             profile.save()
-            BotMessage = "Hi {}, my name is javis and I'll be your virtual assistant. I'll be with you evert step of the way. Mobilise,organise, stop sending messages, VIVA".format(user.username)
+            BotMessage = "Hi {}, my name is javis and I'll be your virtual assistant. I'll be with you every step of the way. Mobilise,organise, stop sending messages, VIVA".format(user.username)
             notification = Notifications(user=user,message=BotMessage)
             notification.save()
             user.is_active = True
@@ -41,3 +49,10 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/registration.html', {'form': form})
+
+@login_required(login_url='/auth/login')
+def connections(request,user_name):
+    user=User.objects.get(username=user_name)
+    follower = Followers(user=user,follower=request.user)
+    follower.save()
+    return redirect('/')

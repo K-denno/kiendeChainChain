@@ -20,8 +20,10 @@
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
     <link href="{% static 'style.css' %}" rel="stylesheet">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-
-</head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head> 
 
 <body id="page-top">
 
@@ -80,11 +82,16 @@
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
+                <a class="nav-link" href="/auth/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Log out</span></a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link" href="/">
                     <i class="fas fa-fw fa-home"></i>
                     <span>Home Site</span></a>
             </li>
-
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
@@ -274,6 +281,7 @@
                 </nav>
                 <!-- End of Topbar -->
 
+                
 
                 <div class="container">
                     <div class="row">
@@ -289,7 +297,7 @@
                                         {% if request.user.profile.dp %}
                                         <img src="{{request.user.profile.dp.url}}" alt="{{request.user.username}}">
                                         {% else %}
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="...">
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="{{request.user.username}}">
                                         {% endif %}
                                     </div>
                                     <div class="profile__header">
@@ -313,6 +321,18 @@
                                 <div class="panel-body">
                                     <table class="table profile__table">
                                         <tbody>
+                                            <tr>
+                                                <th><strong>link</strong></th>
+                                                <td>{{link}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong>Wallet</strong></th>
+                                                <td><b>Ksh </b>{{request.user.profile.amount}}:00 /=</td>
+                                            </tr>
+                                            <tr>
+                                                <th><strong>Email</strong></th>
+                                                <td>{{request.user.email}}</td>
+                                            </tr>
                                             <tr>
                                                 <th><strong>Phone Number</strong></th>
                                                 <td>{{request.user.profile.phone_number}}</td>
@@ -392,10 +412,6 @@
 
                         </div>
                         <div class="col-xs-12 col-sm-3">
-
-
-
-
 
                             <!-- Contact info -->
                             <div class="profile__contact-info">
@@ -483,12 +499,12 @@
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-        
+                        <H2>Edit Profile</H2>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
         
                     </div>
                     <div class="modal-body">
-                        <form action="{% url 'signup' %}" method="POST">
+                        <form action="/" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             {% bootstrap_form profForm %}
                             <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Update</button>

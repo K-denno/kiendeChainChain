@@ -16,6 +16,8 @@ class Profile(models.Model):
     level = models.OneToOneField(Level,on_delete=models.CASCADE,related_name="profiles",null=True)
     phone_number = models.BigIntegerField(null=True)
     location = models.CharField(max_length=20)
+    paid = models.BooleanField(default=False)
+    amount = models.BigIntegerField(default=0)
 
     def save_profile(self):
         self.save()
@@ -28,8 +30,15 @@ class Profile(models.Model):
 
 class Notifications(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='notifications')
-    message = models.CharField(max_length=100)
+    message = models.CharField(max_length=1000)
     timestamp = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.message
+
+class Followers(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='refer')
+    follower = models.OneToOneField(User,on_delete=models.CASCADE,related_name='followers')
+
+    def __str__(self):
+        return self.follower.username
